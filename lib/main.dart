@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mseller/Views/LoginScreen.dart';
+import 'package:mseller/Views/OtpScreen.dart';
+import 'package:mseller/Views/PhoneNumberScreen.dart';
 import 'package:provider/provider.dart';
 
 import 'ViewModels/authentication_view_model.dart';
@@ -19,12 +21,16 @@ class MyApp extends StatelessWidget {
       title: "Mseller_clone",
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.greenAccent),
-
       ),
-      home: ChangeNotifierProvider(
-        create: (context)=> authenticationViewModel(),
-        child: Loginscreen(),
-      ),
+      initialRoute: '/login',
+      routes: {
+        '/login' :(context) =>ChangeNotifierProvider(
+              create: (context)=> authenticationViewModel(),
+              child: Loginscreen(),
+       ),
+        '/otpcode':(context)=>Otpscreen(),
+        '/phone':(context) =>Phonenumberscreen(),
+      },
     );
   }
 }
