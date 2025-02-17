@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:mseller/Views/OtpScreen.dart';
+import 'package:mseller/Views/otp_screen.dart';
 import 'package:mseller/ViewModels/authentication_view_model.dart';
+import 'package:provider/provider.dart';
 
 class Phonenumberscreen extends StatefulWidget {
   const Phonenumberscreen({super.key});
@@ -16,15 +17,16 @@ class Phonenumberscreen extends StatefulWidget {
 }
 
 class _PhonenumberScreenState extends State<Phonenumberscreen> {
-  authenticationViewModel? _initUser;
-  authenticationViewModel? _authenOTP;
+  AuthenticationViewModel? initUser;
+  //authenticationViewModel? _authenOTP;
   String phone = '';
-  final _formGlobalKeyOTP = GlobalKey<FormState>();
+  final formGlobalKeyOTP = GlobalKey<FormState>();
   final TextEditingController phoneController = TextEditingController();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    initUser = AuthenticationViewModel();
   }
 
   @override
@@ -76,19 +78,18 @@ class _PhonenumberScreenState extends State<Phonenumberscreen> {
 
   Widget _buildPhoneField() {
     return Form(
-      key: _formGlobalKeyOTP,
+      key: formGlobalKeyOTP,
       child: IntlPhoneField(
         validator: (value) {
-          if (value == null || !value.isValidNumber()) {
+          if (value == null) {
             return 'Please enter a valid phone number';
           }
-          if (value.number.length != 10)
-          {
-            return 'Phone number must be 10 digits';
+          if (value.number.length != 10) {
+            return 'Phone number must be 11 digits';
           }
           return null;
         },
-        onSaved: (value) => phone = value.toString(),
+        onSaved: (value) => phone = value!.completeNumber as String,
         focusNode: FocusNode(),
         keyboardType: TextInputType.number,
         controller: phoneController,
@@ -111,19 +112,17 @@ class _PhonenumberScreenState extends State<Phonenumberscreen> {
   Widget _buildOTPbtn(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        _initUser!.initializeUser(phone, '', '');
-        if (_formGlobalKeyOTP.currentState!.validate()) {
-          if (_initUser != null) {
-            _initUser!.initializeUser(phone, '', '');
-            print('User: ${phone}');
-          } else {
-            print("Lỗi: _initUser chưa được khởi tạo");
-            return;
-          }
+        if (formGlobalKeyOTP.currentState!.validate()) {
+          formGlobalKeyOTP.currentState!.save();
+          initUser?.initializeUser(phone);
+          print(initUser?.user.toString());
+          //print('nums ${phone}');
           Navigator.pushNamed(context, '/otpcode', arguments: {
-            //_userModel.token='',
+            'phone': initUser?.user?.phone.toString(),
+            'token': initUser?.user?.token.toString(),
+            'otp': initUser?.user?.storedOTP.toString(),
           });
-          _formGlobalKeyOTP.currentState!.reset();
+          formGlobalKeyOTP.currentState!.reset();
         }
       },
       child: Padding(
@@ -150,5 +149,4 @@ class _PhonenumberScreenState extends State<Phonenumberscreen> {
           )),
     );
   }
-
 }

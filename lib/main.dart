@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mseller/Views/LoginScreen.dart';
-import 'package:mseller/Views/OtpScreen.dart';
-import 'package:mseller/Views/PhoneNumberScreen.dart';
-import 'package:mseller/Views/SplashScreen.dart';
+import 'package:mseller/Views/login_screen.dart';
+import 'package:mseller/Views/otp_screen.dart';
+import 'package:mseller/Views/phone_number_screen.dart';
+import 'package:mseller/Views/splash_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'ViewModels/authentication_view_model.dart';
@@ -27,11 +27,14 @@ class MyApp extends StatelessWidget {
       routes: {
         //  '/splashcreen':(context)=>SplashCreen(),
         '/login': (context) => ChangeNotifierProvider(
-              create: (context) => authenticationViewModel(),
-              child: Loginscreen(),
+              create: (context) => AuthenticationViewModel(),
+              child: LoginScreen(),
             ),
         '/otpcode': (context) => Otpscreen(),
-        '/phone': (context) => Phonenumberscreen(),
+        '/phone': (context) => ChangeNotifierProvider(
+              create: (context) => AuthenticationViewModel(),
+              child: Phonenumberscreen(),
+            ),
       },
     );
   }

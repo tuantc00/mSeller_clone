@@ -2,21 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mseller/Models/User_Model.dart';
+import 'package:mseller/Models/user_model.dart';
 import 'package:mseller/ViewModels/authentication_view_model.dart';
-import 'package:mseller/Views/PhoneNumberScreen.dart';
+import 'package:mseller/Views/phone_number_screen.dart';
 import 'package:provider/provider.dart';
 import '../ViewModels/authentication_view_model.dart';
 
-class Loginscreen extends StatefulWidget {
-  Loginscreen({super.key});
+class LoginScreen extends StatefulWidget {
+  LoginScreen({super.key});
 
   @override
-  State<Loginscreen> createState() => _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<Loginscreen> {
-
+class _LoginScreenState extends State<LoginScreen> {
   bool _isPasswordVisible = false;
   final _formGlobalKey = GlobalKey<FormState>();
   final TextEditingController phoneController = TextEditingController();
@@ -29,7 +28,7 @@ class _LoginScreenState extends State<Loginscreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authViewModel = Provider.of<authenticationViewModel>(context);
+    final authViewModel = Provider.of<AuthenticationViewModel>(context);
 
     return Scaffold(
       body: authViewModel.isAuthenticated
@@ -89,7 +88,7 @@ class _LoginScreenState extends State<Loginscreen> {
               if (value!.isEmpty) return 'Please enter your phone number';
               return null;
             },
-           // onSaved: (value) => _userModel.phone = value!,
+            // onSaved: (value) => _userModel.phone = value!,
             keyboardType: TextInputType.number,
             controller: phoneController,
             decoration: InputDecoration(

@@ -1,7 +1,5 @@
-import 'dart:math';
-
+/*
 import 'package:flutter/cupertino.dart';
-import 'package:mseller/Models/user_model.dart';
 
 class AuthenticationViewModel with ChangeNotifier {
   bool _isAuthenticated = false;
@@ -33,11 +31,10 @@ class AuthenticationViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  String generateOTP() => '${Random().nextInt(900000) + 100000}';
   void logout() {
     _user = null;
     _isAuthenticated = false;
     notifyListeners();
   }
 
-}
+}*/

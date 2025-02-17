@@ -13,4 +13,10 @@ class UserModel {
     return UserModel(
         phone: json['phone'], token: json['token'], storedOTP: json['otp']);
   }
+
+  @override
+  String toString() {
+    return 'UserModel{phone: $phone, token: $token, storedOTP: $storedOTP}';
+  }
+
 }
