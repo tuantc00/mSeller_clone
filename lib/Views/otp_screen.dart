@@ -4,24 +4,44 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:mseller/ViewModels/authentication_view_model.dart';
+import 'package:provider/provider.dart';
 
-class Otpscreen extends StatefulWidget {
-  const Otpscreen({super.key});
+class OtpScreen extends StatefulWidget {
+  const OtpScreen({super.key});
 
   @override
   State<StatefulWidget> createState() => _OtpScreenState();
 }
 
-class _OtpScreenState extends State<Otpscreen> {
+class _OtpScreenState extends State<OtpScreen> {
+  //late Map<String,dynamic> data;
   Map data = {};
+  AuthenticationViewModel ?resendOTP;
   bool otpValid = true;
   String errorMess = '';
   final formGlobalKeyOTP = GlobalKey<FormState>();
   final TextEditingController otpController = TextEditingController();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    data={};
+    //resendOTP =AuthenticationViewModel();
+  }
+  @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context)!.settings.arguments as Map;
+    if(data==null){
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Lỗi'),
+        ),
+        body: const Center(
+          child: Text('Không có dữ liệu truyền vào'),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -77,14 +97,25 @@ class _OtpScreenState extends State<Otpscreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text(
-          'Chưa nhận được mã? Gửi lại mã  ',
+          'Chưa nhận được mã? Gửi lại mã',
           style: TextStyle(color: Colors.grey, fontSize: 15),
           textAlign: TextAlign.center,
         ),
-        Icon(
-          Icons.settings_backup_restore_outlined,
-          color: Colors.greenAccent,
-          size: 15,
+        Padding(
+          padding: const EdgeInsets.only(left: 2),
+          child: IconButton(
+            icon: const Icon(Icons.settings_backup_restore_outlined),
+            iconSize: 15,
+            color: Colors.greenAccent,
+            onPressed: () {
+              print('New otp: ${resendOTP?.generateOTP().toString()}');
+              /*final authViewModel = Provider.of<AuthenticationViewModel>(context, listen: false);
+              print('New otp: ${authViewModel.generateOTP()}');*/
+            },
+            /*Icons.settings_backup_restore_outlined,
+            color: Colors.greenAccent,
+            size: 15,*/
+          ),
         ),
       ],
     );
@@ -106,9 +137,9 @@ class _OtpScreenState extends State<Otpscreen> {
         fillColor: Colors.white54,
         filled: true,
         borderColor:
-            otpValid ? Colors.grey : Colors.red,
+        otpValid ? Colors.grey : Colors.red,
         focusedBorderColor:
-            otpValid ? Colors.greenAccent : Colors.red,
+        otpValid ? Colors.greenAccent : Colors.red,
         borderRadius: BorderRadius.circular(12),
         showFieldAsBox: true,
         onSubmit: (value) {

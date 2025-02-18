@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       body: authViewModel.isAuthenticated
-          ? Phonenumberscreen()
+          ? PhoneNumberScreen()
           : Stack(
               children: [
                 _buildLogo(),

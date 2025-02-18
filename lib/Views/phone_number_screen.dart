@@ -7,16 +7,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:mseller/Views/otp_screen.dart';
 import 'package:mseller/ViewModels/authentication_view_model.dart';
+import 'package:mseller/routes/app_route.dart';
 import 'package:provider/provider.dart';
 
-class Phonenumberscreen extends StatefulWidget {
-  const Phonenumberscreen({super.key});
+class PhoneNumberScreen extends StatefulWidget {
+  const PhoneNumberScreen({super.key});
 
   @override
-  State<Phonenumberscreen> createState() => _PhonenumberScreenState();
+  State<PhoneNumberScreen> createState() => _PhonenumberScreenState();
 }
 
-class _PhonenumberScreenState extends State<Phonenumberscreen> {
+class _PhonenumberScreenState extends State<PhoneNumberScreen> {
   AuthenticationViewModel? initUser;
   //authenticationViewModel? _authenOTP;
   String phone = '';
@@ -89,7 +90,7 @@ class _PhonenumberScreenState extends State<Phonenumberscreen> {
           }
           return null;
         },
-        onSaved: (value) => phone = value!.completeNumber as String,
+        onSaved: (value) => phone = value!.completeNumber ,
         focusNode: FocusNode(),
         keyboardType: TextInputType.number,
         controller: phoneController,
@@ -111,15 +112,14 @@ class _PhonenumberScreenState extends State<Phonenumberscreen> {
 
   Widget _buildOTPbtn(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
+      onPressed: () async {
         if (formGlobalKeyOTP.currentState!.validate()) {
           formGlobalKeyOTP.currentState!.save();
-          initUser?.initializeUser(phone);
+          await initUser?.initializeUser(phone);
           print(initUser?.user.toString());
-          //print('nums ${phone}');
           Navigator.pushNamed(context, '/otpcode', arguments: {
             'phone': initUser?.user?.phone.toString(),
-            'token': initUser?.user?.token.toString(),
+            'token': initUser?.user?.pass.toString(),
             'otp': initUser?.user?.storedOTP.toString(),
           });
           formGlobalKeyOTP.currentState!.reset();

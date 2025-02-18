@@ -11,16 +11,17 @@ class AuthenticationViewModel with ChangeNotifier {
 
   Future<void> login(String phone, String password, String otp) async {
     await Future.delayed(const Duration(seconds: 2));
-    _user = UserModel(phone: phone, token: password, storedOTP: '');
+    _user = UserModel(phone: phone, pass: password, storedOTP: '');
     _isAuthenticated = true;
     notifyListeners();
   }
 
-  void initializeUser(String phoneNumber) {
+  Future<void> initializeUser(String phoneNumber)  async{
+    await Future.delayed(const Duration(milliseconds: 500));
     if (_user?.phone != phoneNumber) {
       _user = UserModel(
         phone: phoneNumber,
-        token: '',
+        pass: '',
         storedOTP: generateOTP(),
       );
       notifyListeners();
@@ -28,7 +29,7 @@ class AuthenticationViewModel with ChangeNotifier {
   }
 
   Future<void> sendOTP() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(milliseconds: 500));
     _user?.storedOTP = generateOTP();
     notifyListeners();
   }
