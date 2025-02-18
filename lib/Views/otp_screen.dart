@@ -14,9 +14,8 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-  //late Map<String,dynamic> data;
   Map data = {};
-  AuthenticationViewModel ?resendOTP;
+  AuthenticationViewModel? resendOTP;
   bool otpValid = true;
   String errorMess = '';
   final formGlobalKeyOTP = GlobalKey<FormState>();
@@ -26,13 +25,14 @@ class _OtpScreenState extends State<OtpScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    data={};
+    data = {};
     //resendOTP =AuthenticationViewModel();
   }
+
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context)!.settings.arguments as Map;
-    if(data==null){
+    if (data == null) {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Lỗi'),
@@ -136,10 +136,8 @@ class _OtpScreenState extends State<OtpScreen> {
         numberOfFields: 6,
         fillColor: Colors.white54,
         filled: true,
-        borderColor:
-        otpValid ? Colors.grey : Colors.red,
-        focusedBorderColor:
-        otpValid ? Colors.greenAccent : Colors.red,
+        borderColor: otpValid ? Colors.grey : Colors.red,
+        focusedBorderColor: otpValid ? Colors.greenAccent : Colors.red,
         borderRadius: BorderRadius.circular(12),
         showFieldAsBox: true,
         onSubmit: (value) {

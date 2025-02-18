@@ -90,7 +90,7 @@ class _PhonenumberScreenState extends State<PhoneNumberScreen> {
           }
           return null;
         },
-        onSaved: (value) => phone = value!.completeNumber ,
+        onSaved: (value) => phone = value!.completeNumber,
         focusNode: FocusNode(),
         keyboardType: TextInputType.number,
         controller: phoneController,

@@ -11,8 +11,7 @@ import '../routes/app_route.dart';
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
   @override
-  State<StatefulWidget> createState()=> _SplashScreenState();
-
+  State<StatefulWidget> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
@@ -21,8 +20,8 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Timer(
       const Duration(seconds: 2),
-          () {
-            AppRoute.replaceWith(context, AppRoute.login  );
+      () {
+        AppRoute.replaceWith(context, AppRoute.login);
       },
     );
   }
@@ -33,9 +32,12 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Container(
         color: Colors.white,
         alignment: Alignment.center,
-        child: SvgPicture.asset('assets/logo.svg',height: 150,width: 150,),
+        child: SvgPicture.asset(
+          'assets/logo.svg',
+          height: 150,
+          width: 150,
+        ),
       ),
     );
   }
 }
-

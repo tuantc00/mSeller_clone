@@ -1,12 +1,10 @@
 import 'package:mseller/Models/user_model.dart';
 
-
 class ShopModel {
   String nameShop;
   String tokenShop;
   String inforShop;
   UserModel userModel;
-
 
   ShopModel({
     required this.nameShop,
@@ -17,7 +15,10 @@ class ShopModel {
 
   factory ShopModel.fromJson(Map<String, dynamic> json) {
     return ShopModel(
-        nameShop: json['phone'], tokenShop: json['token'], inforShop: json['infor'],userModel: json['user']);
+        nameShop: json['phone'],
+        tokenShop: json['token'],
+        inforShop: json['infor'],
+        userModel: json['user']);
   }
 
   @override

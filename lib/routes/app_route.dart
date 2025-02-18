@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; // Ensure this is imported
+import 'package:provider/provider.dart';
 import 'package:mseller/Views/login_screen.dart';
 import 'package:mseller/Views/otp_screen.dart';
 import 'package:mseller/Views/phone_number_screen.dart';
 import 'package:mseller/Views/splash_screen.dart';
-import 'package:mseller/ViewModels/authentication_view_model.dart'; // Ensure this is imported
+import 'package:mseller/ViewModels/authentication_view_model.dart';
 
 class AppRoute {
   // Route names
@@ -21,20 +21,20 @@ class AppRoute {
         return MaterialPageRoute(
           builder: (_) => ChangeNotifierProvider(
             create: (context) => AuthenticationViewModel(),
-            child:  LoginScreen(),
+            child: LoginScreen(),
           ),
         );
       case phone:
         return MaterialPageRoute(
           builder: (_) => ChangeNotifierProvider(
             create: (context) => AuthenticationViewModel(),
-            child:  PhoneNumberScreen(),
+            child: PhoneNumberScreen(),
           ),
         );
       case otpcode:
         return MaterialPageRoute(
-            builder: (settings) =>  OtpScreen(),
-            settings: settings,
+          builder: (settings) => OtpScreen(),
+          settings: settings,
         );
       case splash:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
@@ -50,10 +50,10 @@ class AppRoute {
   }
 
   // Navigate to a route
-  static void navigateTo(BuildContext context, String routeName,  {required Map agruments}) {
+  static void navigateTo(BuildContext context, String routeName,
+      {required Map agruments}) {
     Navigator.pushNamed(context, routeName, arguments: agruments);
   }
-
 
   // Replace current route with a new one
   static void replaceWith(BuildContext context, String routeName) {

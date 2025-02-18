@@ -16,7 +16,7 @@ class AuthenticationViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> initializeUser(String phoneNumber)  async{
+  Future<void> initializeUser(String phoneNumber) async {
     await Future.delayed(const Duration(milliseconds: 500));
     if (_user?.phone != phoneNumber) {
       _user = UserModel(
@@ -40,5 +40,4 @@ class AuthenticationViewModel with ChangeNotifier {
     _isAuthenticated = false;
     notifyListeners();
   }
-
 }
