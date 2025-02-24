@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.greenAccent),
       ),
-      initialRoute: AppRoute.splash,
+      initialRoute: AppRoute.packageinfor,
       onGenerateRoute: AppRoute.generateRoute,
     );
   }

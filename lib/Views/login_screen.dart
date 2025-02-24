@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mseller/Models/user_model.dart';
 import 'package:mseller/ViewModels/authentication_view_model.dart';
 import 'package:mseller/Views/phone_number_screen.dart';
+import 'package:mseller/Widget/style_input_field.dart';
 import 'package:provider/provider.dart';
 import '../ViewModels/authentication_view_model.dart';
 
@@ -83,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: TextFormField(
+          child: /*TextFormField(
             validator: (value) {
               if (value!.isEmpty) return 'Please enter your phone number';
               return null;
@@ -98,6 +99,16 @@ class _LoginScreenState extends State<LoginScreen> {
               labelText: 'Số điện thoại',
               labelStyle: TextStyle(fontWeight: FontWeight.bold),
             ),
+          )*/
+              StyleInputField(
+            onPressed: () {},
+            hintText: 'Nhập số điện thoại',
+            labelName: 'Số điện thoại',
+            controller: phoneController,
+            validator: (value) {
+              if (value!.isEmpty) return 'Please enter your phone number';
+              return null;
+            },
           ),
         ),
         SizedBox(height: 20),

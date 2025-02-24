@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:mseller/ViewModels/authentication_view_model.dart';
+import 'package:mseller/ViewModels/shop_register_view_model.dart';
+import 'package:mseller/routes/app_route.dart';
 import 'package:provider/provider.dart';
 
 class OtpScreen extends StatefulWidget {
@@ -16,6 +18,7 @@ class OtpScreen extends StatefulWidget {
 class _OtpScreenState extends State<OtpScreen> {
   Map data = {};
   AuthenticationViewModel? resendOTP;
+  //AuthenticationOtpViewModel? authenOtp;
   bool otpValid = true;
   String errorMess = '';
   final formGlobalKeyOTP = GlobalKey<FormState>();
@@ -26,7 +29,7 @@ class _OtpScreenState extends State<OtpScreen> {
     // TODO: implement initState
     super.initState();
     data = {};
-    //resendOTP =AuthenticationViewModel();
+    //resendOTP = AuthenticationViewModel();
   }
 
   @override
@@ -107,14 +110,18 @@ class _OtpScreenState extends State<OtpScreen> {
             icon: const Icon(Icons.settings_backup_restore_outlined),
             iconSize: 15,
             color: Colors.greenAccent,
-            onPressed: () {
-              print('New otp: ${resendOTP?.generateOTP().toString()}');
-              /*final authViewModel = Provider.of<AuthenticationViewModel>(context, listen: false);
-              print('New otp: ${authViewModel.generateOTP()}');*/
+            onPressed: () async {
+              final authViewModel =
+                  Provider.of<AuthenticationViewModel>(context, listen: false);
+              await authViewModel.initializeUser(authViewModel.generateOTP());
+              data['otp'] = authViewModel.user?.storedOTP.toString();
+              /*await resendOTP
+                  ?.initializeUser(resendOTP!.generateOTP().toString());
+              data['otp'] = resendOTP?.generateOTP().toString();*/
+              //print('New otp: ${resendOTP?.generateOTP().toString()}');
+              print('new otp: ${data['otp']}');
+              //resendOTP?.sendOTP()
             },
-            /*Icons.settings_backup_restore_outlined,
-            color: Colors.greenAccent,
-            size: 15,*/
           ),
         ),
       ],
@@ -143,6 +150,7 @@ class _OtpScreenState extends State<OtpScreen> {
         onSubmit: (value) {
           if (value == data['otp'].toString()) {
             print('OTP đúng');
+            Navigator.pushNamed(context, '/shopinput');
             setState(() {
               errorMess = '';
               otpValid = true;

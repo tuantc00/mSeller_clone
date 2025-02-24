@@ -1,40 +1,40 @@
-/*
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
+import 'package:mseller/Models/bank_model.dart';
+import 'package:mseller/Models/shop_model.dart';
+import 'package:mseller/Models/user_model.dart';
 
-class AuthenticationViewModel with ChangeNotifier {
+class AuthenticationOtpViewModel with ChangeNotifier {
   bool _isAuthenticated = false;
-  UserModel? _user;
-  bool get isAuthenticated => _isAuthenticated;
-  UserModel? get user => _user;
+  ShopModel? _shopInfor;
+  bool get isOtpAuthenticated => isOtpAuthenticated;
 
-  Future<void> login(String phone, String password, String otp) async {
-    await Future.delayed(const Duration(seconds: 2));
-    _user = UserModel(phone: phone, token: password, storedOTP: '');
-    _isAuthenticated = true;
+  void setOtpAuthenticated(bool value) {
+    _isAuthenticated = value;
     notifyListeners();
   }
 
-  void initializeUser(String phoneNumber) {
-    if (_user?.phone != phoneNumber) {
-      _user = UserModel(
-        phone: phoneNumber,
-        token: '',
-        storedOTP: generateOTP(),
-      );
-      notifyListeners();
-    }
-  }
+  ShopModel? get shopInfor => _shopInfor;
 
-  Future<void> sendOTP() async {
-    await Future.delayed(const Duration(seconds: 2));
-    _user?.storedOTP = generateOTP();
+  Future<void> initializeShopInfor(
+      String idShop,
+      String nameShop,
+      String passShop,
+      BankModel bankmModel,
+      String rmCode,
+      UserModel userModel) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    _shopInfor = ShopModel(
+      idShop: _generateId(),
+      nameShop: nameShop,
+      passShop: passShop,
+      bankModel: bankmModel,
+      rmCode: rmCode,
+      userModel: userModel,
+    );
     notifyListeners();
   }
+}
 
-  void logout() {
-    _user = null;
-    _isAuthenticated = false;
-    notifyListeners();
-  }
-
-}*/
+String _generateId() => '${Random().nextInt(900000) + 100000}';
