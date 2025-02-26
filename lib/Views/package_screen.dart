@@ -2,24 +2,33 @@ import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:mseller/Data/branches_data.dart';
+import 'package:mseller/Models/branches_model.dart';
+import 'package:mseller/Models/package_model.dart';
+import 'package:mseller/ViewModels/branches_view_model.dart';
 import 'dart:convert';
 
 import 'package:provider/provider.dart';
 
 import '../Models/news_test.dart';
 import '../ViewModels/package_view_model.dart';
-import '../Widget/news_card_test.dart';
+import '../Widget/package_card.dart';
 
 class PackageScreen extends StatelessWidget {
   const PackageScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final newsViewModel = Provider.of<NewsViewModel>(context,listen: false );
+    final packageViewModel =
+        Provider.of<PackageViewModel>(context, listen: false);
+    final branchViewModel =
+        Provider.of<BranchesViewModel>(context, listen: false);
 
     // Fetch data
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      newsViewModel.fetchNews();
+      packageViewModel.fetchPackage();
+      branchViewModel.fetchBranch();
     });
 
     return Scaffold(
@@ -38,17 +47,26 @@ class PackageScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: Consumer<NewsViewModel>(
-        builder: (context, newsViewModel, child) {
-          if (newsViewModel.isLoading) {
+      body: Consumer2<PackageViewModel, BranchesViewModel>(
+        builder: (context, packageViewModel, branchViewModel, child) {
+          if (packageViewModel.isLoading || branchViewModel.isLoading) {
             return Center(child: CircularProgressIndicator());
           }
 
-          if (newsViewModel.errorMessage.isNotEmpty) {
-            return Center(child: Text(newsViewModel.errorMessage));
+          if (packageViewModel.errorMessage.isNotEmpty) {
+            return Center(child: Text(packageViewModel.errorMessage));
           }
 
-          return BodyBuild(news: newsViewModel.news);
+          if (branchViewModel.errorMessage.isNotEmpty) {
+            return Center(child: Text(branchViewModel.errorMessage));
+          }
+          if (branchViewModel.branches == null) {
+            return Center(child: Text('Không có dữ liệu chi nhánh'));
+          }
+          return BodyBuild(
+            packages: packageViewModel.packages,
+            branch: branchViewModel.branches!,
+          );
         },
       ),
     );
@@ -56,13 +74,20 @@ class PackageScreen extends StatelessWidget {
 }
 
 class BodyBuild extends StatelessWidget {
-  final List<News> news; // Thêm thuộc tính để nhận dữ liệu
+  final List<Package> packages;
+  final Branch branch;
 
-  const BodyBuild({super.key, required this.news}); // Sửa constructor
+  const BodyBuild(
+      {super.key,
+      required this.packages,
+      required this.branch}); // Sửa constructor
 
   @override
   Widget build(BuildContext context) {
-    int days = 5;
+    final remainDays = calculateRemainingDays(branch.expiredDate!);
+    final showExpiredCard = remainDays <= 30;
+    final showStatus = branch.status != false;
+
     return Stack(
       children: <Widget>[
         // Red background container
@@ -95,114 +120,13 @@ class BodyBuild extends StatelessWidget {
           right: 20,
           child: Stack(
             children: [
-              Container(
-                height: 270,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.orange,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 15),
-                      child: SizedBox(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Row(
-                              children: [
-                                Icon(Icons.info_rounded,
-                                    size: 15, color: Colors.white),
-                                SizedBox(width: 4),
-                                Text('Sắp hết hạn',
-                                    style: TextStyle(color: Colors.white)),
-                              ],
-                            ),
-                            Text('Còn lại: $days',
-                                style: TextStyle(color: Colors.white)),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+              //EXPIRED CARD
+              if (branch.status && remainDays <= 30)
+                ExpiredCard(remainingDays: remainDays),
+              BranchCard(
+                branch: branch,
               ),
-              Container(
-                height: 230,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                child: SvgPicture.asset('assets/shop_logo.svg',
-                                    width: 44, height: 44),
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                'Cửa hàng \nPhở thìn 247',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          Chip(
-                            avatar: null,
-                            label: Text('Đã kích hoạt',
-                                style: TextStyle(color: Colors.white)),
-                            backgroundColor: Color.fromARGB(255, 37, 169, 135),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(65),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-                    Container(
-                      width: 331,
-                      height: 90,
-                      decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 249, 250, 251),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('Gia hạn cuối cùng: '),
-                                Text('date 23423'),
-                              ],
-                            ),
-                            const SizedBox(height: 15),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('Ngày hết hạn: '),
-                                Text('date34 23'),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // BRANCH CARD
             ],
           ),
         ),
@@ -260,7 +184,7 @@ class BodyBuild extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             ButtonsTabBar(
-                              radius:16 ,
+                              radius: 16,
                               backgroundColor: Colors.greenAccent,
                               unselectedBackgroundColor: Colors.white,
                               unselectedLabelStyle:
@@ -290,9 +214,15 @@ class BodyBuild extends StatelessWidget {
                         child: TabBarView(
                           children: [
                             ListView.builder(
-                              itemCount: news.length,
+                              itemCount: packages.length,
                               itemBuilder: (context, index) {
-                                return NewsCard(news: news[index]);
+                                final package = packages[index];
+                                print(
+                                    'Gói hiển thị: ${package.name}'); // Kiểm tra thứ tự hiển thị
+                                return PackageCard(
+                                  package: package,
+                                  packViewModel: PackageViewModel(),
+                                );
                               },
                             ),
                             Center(child: Text('Null')),
@@ -307,6 +237,157 @@ class BodyBuild extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class BranchCard extends StatefulWidget {
+  final Branch branch;
+
+  const BranchCard({super.key, required this.branch});
+
+  @override
+  State<BranchCard> createState() => _BranchCardState();
+}
+
+class _BranchCardState extends State<BranchCard> {
+  String statusMess = 'Chưa kích hoạt';
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final lastExtendDate = widget.branch.lastExtendDate;
+    final formattedLastExtendDate =
+        DateFormat('HH:mm dd-MM-yyyy').format(lastExtendDate!);
+
+    final expiredDate = widget.branch.expiredDate;
+    final formattedExpiredDate =
+        DateFormat('HH:mm dd-MM-yyyy').format(expiredDate!);
+    return Container(
+      height: 230,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      child: SvgPicture.asset(widget.branch.avatar as String,
+                          width: 44, height: 44),
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                      'Cửa hàng \n${widget.branch.name}',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+                Chip(
+                  avatar: null,
+                  label: Text(
+                      widget.branch.status ? 'Đã kích hoạt' : 'Chưa kích hoạt',
+                      style: TextStyle(color: Colors.white)),
+                  backgroundColor: widget.branch.status
+                      ? Color.fromARGB(255, 37, 169, 135)
+                      : Colors.red,
+                  side: widget.branch.status
+                      ? BorderSide(color: Color.fromARGB(255, 37, 169, 135))
+                      : BorderSide(color: Colors.red),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(65),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 30),
+          Container(
+            width: 331,
+            height: 90,
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 249, 250, 251),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Gia hạn cuối cùng: '),
+                      Text('${formattedLastExtendDate}'),
+                    ],
+                  ),
+                  const SizedBox(height: 15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Ngày hết hạn: '),
+                      Text('${formattedExpiredDate}'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ExpiredCard extends StatelessWidget {
+  final int remainingDays;
+
+  const ExpiredCard({super.key, required this.remainingDays});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 270,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.orange,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+            child: SizedBox(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Row(
+                    children: [
+                      Icon(Icons.info_rounded, size: 15, color: Colors.white),
+                      SizedBox(width: 4),
+                      Text('Sắp hết hạn',
+                          style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                  Text('Còn lại: $remainingDays ngày',
+                      style: TextStyle(color: Colors.white)),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

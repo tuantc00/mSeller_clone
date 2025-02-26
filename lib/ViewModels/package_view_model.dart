@@ -1,43 +1,86 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../Models/news_test.dart';
+import 'package:mseller/Data/package_data.dart';
+import 'package:mseller/Models/package_model.dart';
 
-class NewsViewModel with ChangeNotifier {
-  List<News> _news = [];
+class PackageViewModel with ChangeNotifier {
+  List<Package> _packages = [];
   bool _isLoading = false;
   String _errorMessage = '';
 
-  List<News> get news => _news;
+  List<Package> get packages => _packages;
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
 
-  Future<void> fetchNews() async {
+  Future<void> fetchPackage() async {
     _isLoading = true;
     notifyListeners();
     try {
-      String apiKey = "";
-      String urlString =
-          "https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=$apiKey";
-      Uri uri = Uri.parse(urlString);
-      final newsResponse = await http.get(uri);
-
-      if (newsResponse.statusCode == 200) {
-        Map<String, dynamic> jsonData = json.decode(newsResponse.body);
-        if (jsonData['articles'] != null) {
-          List<dynamic> articles = jsonData['articles'];
-          _news = articles.map((json) => News.fromJson(json)).toList();
-        } else {
-          throw Exception('No articles found in the response');
-        }
-      } else {
-        throw Exception('Failed to load news');
-      }
+      await Future.delayed(Duration(milliseconds: 500));
+      _packages = createMockPackageList();
+      _packages = sortPackages(_packages);
     } catch (e) {
-      _errorMessage = "Error fetching news: $e";
+      _errorMessage = "Error fetching data: $e";
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
+
+  List<Package> sortPackages(List<Package> packages) {
+    packages.sort((a, b) {
+      if (a.promotion != null && b.promotion == null) return -1;
+      if (a.promotion == null && b.promotion != null) return 1;
+
+      if (a.isPopular && !b.isPopular) return -1;
+      if (!a.isPopular && b.isPopular) return 1;
+
+      return 0;
+    });
+    return packages;
+  }
+
+  String getPackageTag(Package package) {
+    if (package.promotion != null) return 'Khuyến mãi';
+    if (package.isPopular) return 'Phổ biến';
+    return '';
+  }
+
+  bool showBorder(Package package) {
+    return package.promotion != null || package.isPopular;
+  }
+
+  String calculateSavings(Package package) {
+    if (package.promotion == null || package.promotion!.price == null)
+      return '';
+
+    final originalPrice = package.price;
+    final discountedPrice = package.promotion!.price!;
+    final savings =
+        (1 - (originalPrice - discountedPrice) / originalPrice) * 100;
+    return 'Tiết kiệm ${savings.toStringAsFixed(2)}%';
+  }
+
+  String promotionTag(Package package) {
+    if (package.promotion?.durationType != null) {
+      return 'Tặng thêm: ${package.promotion!.duration} ${package.promotion!.durationType!.toDisplayString()}';
+    }
+    return '';
+  }
+// String getFormattedDuration(Package package) {
+//   final duration = package.duration;
+//   final durationType = package.durationType;
+//
+//   switch (durationType) {
+//     case DurationType.day:
+//       return '$duration ngày';
+//     case DurationType.month:
+//       final months = duration ~/ 30;
+//       return '$months tháng';
+//     case DurationType.year:
+//       final years = duration ~/ 365;
+//       return '$years năm';
+//     default:
+//       return '';
+//   }
+// }
 }

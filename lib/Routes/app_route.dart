@@ -10,6 +10,7 @@ import 'package:mseller/Views/phone_number_screen.dart';
 import 'package:mseller/Views/splash_screen.dart';
 import 'package:mseller/ViewModels/authentication_view_model.dart';
 
+import '../ViewModels/branches_view_model.dart';
 import '../ViewModels/package_view_model.dart';
 
 class AppRoute {
@@ -57,8 +58,11 @@ class AppRoute {
         return MaterialPageRoute(builder: (_) => const ShopInputInforScreen());
       case packageinfor:
         return MaterialPageRoute(
-          builder: (_) => ChangeNotifierProvider(
-            create: (context) => NewsViewModel(), // Cung cấp NewsViewModel
+          builder: (_) => MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (context) => PackageViewModel()),
+              ChangeNotifierProvider(create: (context) => BranchesViewModel()),
+            ],
             child: PackageScreen(),
           ),
         );

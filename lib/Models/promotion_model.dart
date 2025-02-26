@@ -1,11 +1,25 @@
 import 'package:mseller/Models/package_model.dart';
 
+enum PromotionType {
+  price,
+  duration;
+
+  static PromotionType fromString(String value) {
+    return PromotionType.values.firstWhere(
+      (type) => type.toString() == value.toLowerCase(),
+      orElse: () => PromotionType.price,
+    );
+  }
+}
+
 class Promotion {
+  final PromotionType? promotionType;
   final int? price;
   final int? duration;
   final DurationType? durationType;
 
   Promotion({
+    this.promotionType,
     this.price,
     this.duration,
     this.durationType,

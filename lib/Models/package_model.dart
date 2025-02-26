@@ -12,17 +12,18 @@ enum DurationType {
       (type) => type.toString() == value.toLowerCase(),
     );
   }
-}
 
-enum PromotionType {
-  price,
-  duration;
-
-  static PromotionType fromString(String value) {
-    return PromotionType.values.firstWhere(
-      (type) => type.toString() == value.toLowerCase(),
-      orElse: () => PromotionType.price,
-    );
+  String toDisplayString() {
+    switch (this) {
+      case DurationType.day:
+        return 'ngày';
+      case DurationType.month:
+        return 'tháng';
+      case DurationType.year:
+        return 'năm';
+      default:
+        return '';
+    }
   }
 }
 
@@ -33,7 +34,6 @@ class Package {
   final int price;
   final bool isPopular;
   final Promotion? promotion;
-  final PromotionType type;
 
   Package({
     this.name,
@@ -42,7 +42,6 @@ class Package {
     required this.price,
     this.isPopular = false,
     this.promotion,
-    required this.type,
   });
 
   factory Package.fromJson(Map<String, dynamic> json) {
@@ -54,13 +53,12 @@ class Package {
       price: json['price'] as int? ?? 0,
       isPopular: json['isPopular'] as bool? ?? false,
       promotion: Promotion.fromJson(json['promotion'] as Map<String, dynamic>?),
-      type: PromotionType.fromString(json['type'] as String? ?? 'price'),
     );
   }
 
   @override
   String toString() {
     return 'Package(name: $name, duration: $duration, durationType: $durationType, '
-        'price: $price, isPopular: $isPopular, promotion: $promotion, type: $type)';
+        'price: $price, isPopular: $isPopular, promotion: $promotion)';
   }
 }
