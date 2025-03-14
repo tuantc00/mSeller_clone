@@ -14,7 +14,6 @@ import '../view_model/branches_view_model.dart';
 import '../view_model/package_view_model.dart';
 
 class AppRoute {
-  // Route names
   static const String login = '/login';
   static const String phone = '/phone';
   static const String otpcode = '/otpcode';
@@ -23,7 +22,6 @@ class AppRoute {
   static const String packageinfor = '/package';
   static const String barcodescan = '/barcode';
 
-  // Generate routes
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case login:
@@ -37,15 +35,13 @@ class AppRoute {
         return MaterialPageRoute(
           builder: (_) => ChangeNotifierProvider(
             create: (context) => AuthenticationViewModel(),
-            child: PhoneNumberScreen(),
+            child: const PhoneNumberScreen(),
           ),
         );
       case otpcode:
+        final UserAgrument args = settings.arguments as UserAgrument;
         return MaterialPageRoute(
-          builder: (settings) => ChangeNotifierProvider(
-            create: (context) => AuthenticationViewModel(),
-            child: OtpScreen(),
-          ),
+          builder: (context) => OtpScreen(userAgrument: args),
           settings: settings,
         );
       case shopinput:
@@ -75,13 +71,6 @@ class AppRoute {
     }
   }
 
-  // Navigate to a route
-  // static void navigateTo(BuildContext context, String routeName,
-  //     {required Map agruments}) {
-  //   Navigator.pushNamed(context, routeName, arguments: agruments);
-  // }
-
-  // Replace current route with a new one
   static void replaceWith(BuildContext context, String routeName) {
     Navigator.pushReplacementNamed(context, routeName);
   }
