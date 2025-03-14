@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
             ),
       ),
       initialRoute: AppRoute.phone,
+
       onGenerateRoute: AppRoute.generateRoute,
     );
   }

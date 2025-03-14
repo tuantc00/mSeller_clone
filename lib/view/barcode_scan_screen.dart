@@ -78,7 +78,7 @@ class BodyBuild extends StatelessWidget {
                         child: const Text(
                           'Làm mới',
                           style: TextStyle(
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w100,
                             color: Colors.teal,
                             decoration: TextDecoration.underline,
                             decorationColor: Colors.teal,

@@ -1,51 +1,38 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
-
 import 'package:provider/provider.dart';
 
-import '../model/user_model.dart';
 import '../view_model/authentication_view_model.dart';
 
+class UserAgrument {
+  final String phone;
+  final String pass;
+  final String otp;
+
+  UserAgrument({required this.phone, required this.pass, required this.otp});
+}
+
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key});
+  final UserAgrument userAgrument;
+
+  const OtpScreen({super.key, required this.userAgrument});
 
   @override
-  State<StatefulWidget> createState() => _OtpScreenState();
+  State<OtpScreen> createState() => _OtpScreenState();
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-  UserModel? data;
-  AuthenticationViewModel? resendOTP;
-  //AuthenticationOtpViewModel? authenOtp;
   bool otpValid = true;
   String errorMess = '';
   final formGlobalKeyOTP = GlobalKey<FormState>();
   final TextEditingController otpController = TextEditingController();
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    data;
-    //resendOTP = AuthenticationViewModel();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    data = ModalRoute.of(context)!.settings.arguments as UserModel;
-    if (data == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('Lỗi'),
-        ),
-        body: const Center(
-          child: Text('Không có dữ liệu truyền vào'),
-        ),
-      );
-    }
+    final UserAgrument args = widget.userAgrument;
+    print('test ${args.otp}');
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -68,18 +55,18 @@ class _OtpScreenState extends State<OtpScreen> {
                   const TextSpan(
                       text: 'Chúng tôi đã gửi mã OTP đến \n số điện thoại '),
                   TextSpan(
-                    text: data!.phone,
+                    text: args.phone,
                     style: const TextStyle(color: Colors.black),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 35),
-            _buildOtpCodeField(),
+            _buildOtpCodeField(args.otp),
             const SizedBox(height: 25),
             _buildTextError(),
             const SizedBox(height: 20),
-            _buildTextBody(),
+            _buildTextBody(args.phone),
           ],
         ),
       ),
@@ -96,7 +83,7 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 
-  Widget _buildTextBody() {
+  Widget _buildTextBody(String phone) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -113,15 +100,10 @@ class _OtpScreenState extends State<OtpScreen> {
             color: Colors.greenAccent,
             onPressed: () async {
               final authViewModel =
-                  Provider.of<AuthenticationViewModel>(context, listen: false);
-              await authViewModel.initializeUser(authViewModel.generateOTP());
-              data!.storedOTP = authViewModel.user!.storedOTP;
-              /*await resendOTP
-                  ?.initializeUser(resendOTP!.generateOTP().toString());
-              data['otp'] = resendOTP?.generateOTP().toString();*/
-              //print('New otp: ${resendOTP?.generateOTP().toString()}');
-              print('new otp: ${data?.storedOTP}');
-              //resendOTP?.sendOTP()
+              Provider.of<AuthenticationViewModel>(context, listen: false);
+              await authViewModel.initializeUser(phone);
+              print('New OTP: ${authViewModel.user!.storedOTP}');
+              setState(() {});
             },
           ),
         ),
@@ -136,7 +118,7 @@ class _OtpScreenState extends State<OtpScreen> {
     );
   }
 
-  Widget _buildOtpCodeField() {
+  Widget _buildOtpCodeField(String correctOtp) {
     return Form(
       key: formGlobalKeyOTP,
       child: OtpTextField(
@@ -149,7 +131,7 @@ class _OtpScreenState extends State<OtpScreen> {
         borderRadius: BorderRadius.circular(12),
         showFieldAsBox: true,
         onSubmit: (value) {
-          if (value == data?.storedOTP) {
+          if (value == correctOtp) {
             print('OTP đúng');
             Navigator.pushNamed(context, '/shopinput');
             setState(() {

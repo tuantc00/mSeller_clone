@@ -20,7 +20,6 @@ class StyleToastCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
-
                 blurRadius: 10,
                 spreadRadius: 3,
                 offset: Offset.zero,

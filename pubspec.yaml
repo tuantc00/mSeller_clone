@@ -83,7 +83,7 @@ flutter:
         - asset: fonts/AvertaCY-Regular.ttf
           weight: 400
         - asset: fonts/AvertaCY-Semibold.ttf
-          weight: 900
+          weight: 700
 
 
     # An image asset can refer to one or more resolution-specific "variants", see
