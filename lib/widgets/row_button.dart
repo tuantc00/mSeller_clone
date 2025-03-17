@@ -24,7 +24,7 @@ class BuildRowButtons extends StatelessWidget {
         (button) => button.actionButton == viewModel.selectedAction);
 
     return Container(
-      width: 180,
+      width: 160,
       height: 36,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),

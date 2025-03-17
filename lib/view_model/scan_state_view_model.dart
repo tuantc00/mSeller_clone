@@ -196,6 +196,7 @@ import 'package:delightful_toast/delight_toast.dart';
 import 'package:delightful_toast/toast/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../model/button_camera_scan_model.dart';
 import '../model/product_model.dart';
@@ -229,6 +230,19 @@ class BarcodeScanViewModel extends ChangeNotifier {
   ScanMode get scanMode => _scanMode;
   ActionButton get selectedAction => _selectedAction;
   int get counter => _counter;
+
+  MobileScannerController? _cameraController;
+  void setCameraController(MobileScannerController controller) {
+    _cameraController = controller;
+  }
+
+  void stopCamera() {
+    _cameraController?.stop();
+  }
+
+  void startCamera() {
+    _cameraController?.start();
+  }
 
   double get totalPrice {
     return _products.fold(

@@ -9,7 +9,8 @@ class PackageCard extends StatelessWidget {
   final Package package;
   final PackageViewModel packViewModel;
 
-  const PackageCard({super.key, required this.package, required this.packViewModel});
+  const PackageCard(
+      {super.key, required this.package, required this.packViewModel});
 
   @override
   Widget build(BuildContext context) {
@@ -100,15 +101,13 @@ class PackageCard extends StatelessWidget {
                                   ),
                                 ),
                               if (promotionTagDuration.isNotEmpty)
-                                Container(
-                                  child: Text(
-                                    promotionTagDuration,
-                                    style: TextStyle(
-                                      color: Color.fromARGB(255, 37, 169, 135),
-                                      fontSize: 12,
-                                      fontStyle: FontStyle.italic,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                Text(
+                                  promotionTagDuration,
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 37, 169, 135),
+                                    fontSize: 12,
+                                    fontStyle: FontStyle.italic,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                             ],

@@ -27,3 +27,26 @@ class UserModel {
     return 'UserModel{phone: $phone, token: $pass, storedOTP: $storedOTP}';
   }
 }
+
+// class Test{
+//   final String a;
+//
+//   Test(this.a);
+// }
+// class Test2{
+//   final String b;
+//
+//   Test2(this.b);
+// }
+// class Child implements Test,Test2{
+//
+//   @override
+//   // TODO: implement a
+//   String get a => throw UnimplementedError();
+//
+//   @override
+//   // TODO: implement b
+//   String get b => throw UnimplementedError();
+//    AChild(this.A);
+//
+// }

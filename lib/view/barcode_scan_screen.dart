@@ -3,6 +3,7 @@ import 'package:delightful_toast/toast/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:mseller/widgets/custome_dialog.dart';
 import 'package:provider/provider.dart';
 
 import '../model/button_camera_scan_model.dart';
@@ -97,8 +98,28 @@ class BodyBuild extends StatelessWidget {
                     children: [
                       const BuildNumberAdjust(),
                       BuildRowButtons(),
-                      const Icon(Icons.help_outline_outlined,
-                          color: Colors.grey),
+                      IconButton(
+                          onPressed: () {
+                            // Lấy state của CameraScanField từ key
+                            final cameraScanField =
+                                Provider.of<BarcodeScanViewModel>(context,
+                                    listen: false);
+                            // Dừng camera
+
+                            cameraScanField.stopCamera();
+
+                            showDialog(
+                                    context: context,
+                                    builder: (context) => const CustomeDialog())
+                                .then((_) {
+                              // Khởi động lại camera khi dialog đóng
+                              cameraScanField.startCamera();
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.help_outline_outlined,
+                            color: Colors.grey,
+                          ))
                     ],
                   ),
                 ),

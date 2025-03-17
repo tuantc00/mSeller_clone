@@ -7,7 +7,6 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import '../view_model/authentication_view_model.dart';
 import 'otp_screen.dart';
 
-
 class PhoneNumberScreen extends StatefulWidget {
   const PhoneNumberScreen({super.key});
 
@@ -111,14 +110,12 @@ class _PhonenumberScreenState extends State<PhoneNumberScreen> {
           formGlobalKeyOTP.currentState!.save();
           await initUser?.initializeUser(phone);
           print(initUser?.user.toString());
-          Navigator.pushNamed(context,
-              '/otpcode',
+          Navigator.pushNamed(context, '/otpcode',
               arguments: UserAgrument(
-                phone: initUser?.user?.phone??'',
-                otp: initUser?.user?.storedOTP??'',
-                pass: initUser?.user?.pass ??'',
-              )
-          );
+                phone: initUser?.user?.phone ?? '',
+                otp: initUser?.user?.storedOTP ?? '',
+                pass: initUser?.user?.pass ?? '',
+              ));
           formGlobalKeyOTP.currentState!.reset();
         }
       },
