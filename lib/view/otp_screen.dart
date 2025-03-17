@@ -100,7 +100,7 @@ class _OtpScreenState extends State<OtpScreen> {
             color: Colors.greenAccent,
             onPressed: () async {
               final authViewModel =
-              Provider.of<AuthenticationViewModel>(context, listen: false);
+                  Provider.of<AuthenticationViewModel>(context, listen: false);
               await authViewModel.initializeUser(phone);
               print('New OTP: ${authViewModel.user!.storedOTP}');
               setState(() {});

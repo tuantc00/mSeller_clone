@@ -4,9 +4,7 @@ import 'package:delightful_toast/toast/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:mseller/widgets/style_toast_card.dart';
-
 import 'package:provider/provider.dart';
-
 import '../model/button_camera_scan_model.dart';
 import '../view_model/scan_state_view_model.dart';
 
@@ -31,6 +29,9 @@ class _CameraScanFieldState extends State<CameraScanField>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    final viewModel = Provider.of<BarcodeScanViewModel>(context, listen: false);
+    viewModel.setCameraController(controller);
+
     Future.delayed(const Duration(milliseconds: 500), () {
       controller.start();
       setState(() => isScanning = true);
@@ -43,7 +44,8 @@ class _CameraScanFieldState extends State<CameraScanField>
       controller.start();
       setState(() => isScanning = true);
     } else if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.hidden) {
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.detached) {
       controller.stop();
       setState(() => isScanning = false);
     }
@@ -53,6 +55,7 @@ class _CameraScanFieldState extends State<CameraScanField>
   void dispose() {
     controller.dispose();
     WidgetsBinding.instance.removeObserver(this);
+    //super.didChangeAppLifecycleState(state);
     super.dispose();
   }
 

@@ -19,8 +19,7 @@ class MyApp extends StatelessWidget {
               fontFamily: 'AvertaCY',
             ),
       ),
-      initialRoute: AppRoute.phone,
-
+      initialRoute: AppRoute.barcodescan,
       onGenerateRoute: AppRoute.generateRoute,
     );
   }

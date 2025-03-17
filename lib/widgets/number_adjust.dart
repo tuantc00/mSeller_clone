@@ -38,7 +38,6 @@ class _BuildNumberAdjustState extends State<BuildNumberAdjust> {
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<BarcodeScanViewModel>(context);
-
     return Container(
       width: 103,
       height: 36,
