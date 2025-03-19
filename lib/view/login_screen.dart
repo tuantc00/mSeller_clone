@@ -1,15 +1,17 @@
+import 'package:delightful_toast/delight_toast.dart';
+import 'package:delightful_toast/toast/utils/enums.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mseller/view/phone_number_screen.dart';
 import 'package:provider/provider.dart';
-
 import '../view_model/authentication_view_model.dart';
 import '../widgets/style_input_field.dart';
+import '../widgets/style_toast_card.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({super.key});
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -32,37 +34,39 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       body: authViewModel.isAuthenticated
-          ? PhoneNumberScreen()
+          ? Center(child: const Text('!!!!!!!!!!'))
           : Stack(
-              children: [
-                _buildLogo(),
-                Padding(
-                  padding: const EdgeInsets.only(top: 280),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(20),
-                            topLeft: Radius.circular(30))),
-                    child: Form(
-                      key: _formGlobalKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(height: 10),
-                          _buildTextheader(),
-                          SizedBox(height: 20),
-                          _buildInputFields(),
-                          _buildText(),
-                          SizedBox(height: 10),
-                          _buildLoginbtn(context),
-                        ],
-                      ),
-                    ),
-                  ),
+        children: [
+          _buildLogo(),
+          Padding(
+            padding: const EdgeInsets.only(top: 280),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(20),
+                  topLeft: Radius.circular(30),
                 ),
-              ],
+              ),
+              child: Form(
+                key: _formGlobalKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 10),
+                    _buildTextheader(),
+                    const SizedBox(height: 20),
+                    _buildInputFields(),
+                    _buildText(),
+                    const SizedBox(height: 10),
+                    _buildLoginbtn(context),
+                  ],
+                ),
+              ),
             ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -83,23 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: /*TextFormField(
-            validator: (value) {
-              if (value!.isEmpty) return 'Please enter your phone number';
-              return null;
-            },
-            // onSaved: (value) => _userModel.phone = value!,
-            keyboardType: TextInputType.number,
-            controller: phoneController,
-            decoration: InputDecoration(
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-              hintText: 'Nhập số điện thoại',
-              labelText: 'Số điện thoại',
-              labelStyle: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          )*/
-              StyleInputField(
+          child: StyleInputField(
             onPressed: () {},
             hintText: 'Nhập số điện thoại',
             labelName: 'Số điện thoại',
@@ -110,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
             },
           ),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: TextFormField(
@@ -119,11 +107,11 @@ class _LoginScreenState extends State<LoginScreen> {
               if (value!.isEmpty) return 'Please enter your password';
               return null;
             },
-            //onSaved: (value) => _userModel.token = value!,
             controller: passwordController,
             decoration: InputDecoration(
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
               suffixIcon: IconButton(
                 icon: Icon(
                   _isPasswordVisible
@@ -136,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               hintText: 'Nhập mật khẩu',
               labelText: 'Mật khẩu',
-              labelStyle: TextStyle(fontWeight: FontWeight.bold),
+              labelStyle: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -149,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
       alignment: Alignment.centerRight,
       child: Padding(
         padding: const EdgeInsets.only(right: 15),
-        child: Text(
+        child: const Text(
           'Quên mật khẩu?',
           style: TextStyle(color: Colors.greenAccent),
         ),
@@ -165,29 +153,55 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_formGlobalKey.currentState!.validate()) {
                   _formGlobalKey.currentState!.save();
-                  //print('Số điện thoại: ${_userModel.phone}');
-                  //print('Mật khẩu: ${_userModel.token}');
-                  Navigator.pushNamed(context, '', arguments: {});
+                  final authViewModel = Provider.of<AuthenticationViewModel>(
+                      context,
+                      listen: false);
+                  await authViewModel.login(
+                      phoneController.text, passwordController.text);
+                  if (authViewModel.isAuthenticated) {
+                     Navigator.pushNamed(context, '/package');
+                  } else {
+                    // print(phoneController.text);
+                    // print(passwordController.text);
+                    // ScaffoldMessenger.of(context).showSnackBar(
+                    //   const SnackBar(content: Text('Đăng nhập thất bại'),duration: Durations.short1,),
+                    // );
+                    print('Log ${authViewModel.errorMess}');
+                    DelightToastBar(
+                      builder: (context) {
+                        return StyleToastCard(
+                          Colors.red,
+                          null,
+                          authViewModel.errorMess,
+                          '', () {},
+                        );
+                      },
+                      position: DelightSnackbarPosition.top,
+                      autoDismiss: true,
+                      snackbarDuration: const Duration(seconds: 1),
+                    ).show(context);
+                  }
                 }
               },
-              child: Text('Đăng nhập', style: TextStyle(fontSize: 20)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.greenAccent,
-                minimumSize: Size.fromHeight(57),
+                minimumSize: const Size.fromHeight(57),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
+              child: const Text('Đăng nhập', style: TextStyle(fontSize: 20)),
             ),
           ),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               'Bạn chưa có tài khoản  ?',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 15),
@@ -198,12 +212,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () {
                   Navigator.pushNamed(context, '/phone');
                 },
-                child: const Text('Đăng kí ngay'),
                 style: TextButton.styleFrom(
                   textStyle: const TextStyle(fontSize: 15),
                 ),
+                child: const Text('Đăng kí ngay'),
               ),
-            )
+            ),
           ],
         ),
       ],
@@ -211,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildTextheader() {
-    return Text(
+    return const Text(
       'Đăng nhập',
       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
       textAlign: TextAlign.center,
