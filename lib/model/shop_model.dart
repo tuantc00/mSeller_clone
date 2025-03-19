@@ -2,6 +2,14 @@ import 'package:mseller/model/user_model.dart';
 
 import 'bank_model.dart';
 
+
+// class UserModel{
+//   final String id;
+//   final String phoneNumber;
+//   final String fullName;
+//
+// }
+
 class ShopModel {
   String idShop;
   String nameShop;
@@ -28,9 +36,10 @@ class ShopModel {
         !json.containsKey('name') ||
         !json.containsKey('') ||
         !json.containsKey('pass') ||
-        !json.containsKey('pass'))
+        !json.containsKey('pass')) {
       throw const FormatException(
           ' Json is missing required keys: phone, token or otp');
+    }
     return ShopModel(
       nameShop: json['phone'],
       passShop: json['token'],

@@ -1,52 +1,74 @@
+// class Company {
+//   final String id;
+//   final String? companyname;
+//
+//   Company({required this.id, this.companyname});
+//
+//   factory Company.fromJson(Map<String, dynamic>? json) {
+//     if (json == null) {
+//       throw const FormatException('Null JSON provided for Company');
+//     }
+//     if (!json.containsKey('id')) {
+//       throw const FormatException('JSON is missing required key: id for Company');
+//     }
+//     return Company(
+//       id: json['id'] as String,
+//       companyname: json['companyname'] as String?,
+//     );
+//   }
+//
+//   @override
+//   String toString() {
+//     return 'Company{id: $id, companyname: $companyname}';
+//   }
+// }
+
 class UserModel {
-  String phone;
-  String pass;
-  String storedOTP;
+  final String? id;
+  final String phoneNumber;
+  //final String password;
+  final String? fullName;
+  final String? avatar;
+ // final Company? company;
+  final String? bankAccountNumber;
+  final String? bankAccountName;
 
   UserModel({
-    required this.phone,
-    required this.pass,
-    required this.storedOTP,
+    this.id,
+    required this.phoneNumber,
+    //required this.password,
+    this.fullName,
+    this.avatar,
+   // this.company,
+    this.bankAccountNumber,
+    this.bankAccountName,
   });
 
   factory UserModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) {
-      throw const FormatException('Null Json provided');
+      throw const FormatException('Null JSON provided');
     }
-    if (!json.containsKey('phone') ||
-        !json.containsKey('pass') ||
-        !json.containsKey('otp'))
+    if (!json.containsKey('phoneNumber')  ) {
       throw const FormatException(
-          ' Json is missing required keys: phone, token or otp');
+          'JSON is missing required keys: phoneNumber');
+    }
+
     return UserModel(
-        phone: json['phone'], pass: json['token'], storedOTP: json['otp']);
+      id: json['id'] as String?,
+      phoneNumber: json['phoneNumber'] as String,
+      //password: json['password'] as String,
+      fullName: json['fullName'] as String?,
+      avatar: json['avatar'] as String?,
+      //company: Company.fromJson(json['company'] as Map<String, dynamic>?),
+      bankAccountNumber: json['bankAccountNumber'] as String?,
+      bankAccountName: json['bankAccountName'] as String?,
+    );
   }
 
   @override
   String toString() {
-    return 'UserModel{phone: $phone, token: $pass, storedOTP: $storedOTP}';
+    return 'UserModel{id: $id, phoneNumber: $phoneNumber '
+        'fullName: $fullName, avatar: $avatar, '
+        'bankAccountNumber: $bankAccountNumber, bankAccountName: $bankAccountName}';
   }
 }
-
-// class Test{
-//   final String a;
-//
-//   Test(this.a);
-// }
-// class Test2{
-//   final String b;
-//
-//   Test2(this.b);
-// }
-// class Child implements Test,Test2{
-//
-//   @override
-//   // TODO: implement a
-//   String get a => throw UnimplementedError();
-//
-//   @override
-//   // TODO: implement b
-//   String get b => throw UnimplementedError();
-//    AChild(this.A);
-//
-// }

@@ -31,19 +31,19 @@ class AppRoute {
             child: LoginScreen(),
           ),
         );
-      case phone:
-        return MaterialPageRoute(
-          builder: (_) => ChangeNotifierProvider(
-            create: (context) => AuthenticationViewModel(),
-            child: const PhoneNumberScreen(),
-          ),
-        );
-      case otpcode:
-        final UserAgrument args = settings.arguments as UserAgrument;
-        return MaterialPageRoute(
-          builder: (context) => OtpScreen(userAgrument: args),
-          settings: settings,
-        );
+      // case phone:
+      //   return MaterialPageRoute(
+      //     builder: (_) => ChangeNotifierProvider(
+      //       create: (context) => AuthenticationViewModel(),
+      //       child: const PhoneNumberScreen(),
+      //     ),
+      //   );
+      // case otpcode:
+      //   final UserAgrument args = settings.arguments as UserAgrument;
+      //   return MaterialPageRoute(
+      //     builder: (context) => OtpScreen(userAgrument: args),
+      //     settings: settings,
+      //   );
       case shopinput:
         return MaterialPageRoute(builder: (_) => const ShopInputInforScreen());
       case packageinfor:
